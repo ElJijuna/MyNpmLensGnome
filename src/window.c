@@ -13,6 +13,16 @@ struct _MnlWindow
 G_DEFINE_FINAL_TYPE (MnlWindow, mnl_window, ADW_TYPE_APPLICATION_WINDOW)
 
 static void
+on_add_clicked (GtkButton *button G_GNUC_UNUSED, gpointer user_data)
+{
+  WebKitWebView *webview = WEBKIT_WEB_VIEW (user_data);
+  webkit_web_view_evaluate_javascript (
+    webview,
+    "window.dispatchEvent(new CustomEvent('gnome:open-dialog-addpackage'));",
+    -1, NULL, NULL, NULL, NULL, NULL);
+}
+
+static void
 mnl_window_class_init (MnlWindowClass *klass G_GNUC_UNUSED)
 {
 }
@@ -38,8 +48,17 @@ mnl_window_init (MnlWindow *self)
   gtk_widget_add_css_class (add_button, "suggested-action");
   adw_header_bar_pack_start (ADW_HEADER_BAR (header), add_button);
 
-  /* WebView */
-  self->webview = WEBKIT_WEB_VIEW (webkit_web_view_new ());
+  /* WebView with UserContentManager for JS ↔ C bridge */
+  WebKitUserContentManager *manager = webkit_user_content_manager_new ();
+  webkit_user_content_manager_register_script_message_handler (manager, "app", NULL);
+
+  self->webview = WEBKIT_WEB_VIEW (
+    g_object_new (WEBKIT_TYPE_WEB_VIEW,
+                  "user-content-manager", manager,
+                  NULL));
+  g_object_unref (manager);
+
+  g_signal_connect (add_button, "clicked", G_CALLBACK (on_add_clicked), self->webview);
   gtk_widget_set_vexpand (GTK_WIDGET (self->webview), TRUE);
   gtk_widget_set_hexpand (GTK_WIDGET (self->webview), TRUE);
 
