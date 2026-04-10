@@ -5,13 +5,51 @@
   <summary>NPM package explorer</summary>
   <metadata_license>FSFAP</metadata_license>
   <project_license>MIT</project_license>
+
+  <developer id="io.github.eljijuna">
+    <name>pilmee</name>
+  </developer>
+
   <description>
-    <p>Browse and explore NPM packages.</p>
+    <p>
+      NPM Lens is a desktop app for browsing and exploring NPM packages.
+      It wraps the NPM Lens web app in a native GNOME window using WebKitGTK,
+      giving you a fast and integrated experience without opening a browser.
+    </p>
+    <p>
+      Quickly search for packages, inspect versions, dependencies,
+      and repository links — all from your desktop.
+    </p>
   </description>
+
   <launchable type="desktop-id">io.github.eljijuna.NpmLens.desktop</launchable>
+
   <url type="homepage">https://eljijuna.github.io/MyNpmLens/</url>
+  <url type="vcs-browser">https://github.com/ElJijuna/NpmLensGnome</url>
+  <url type="bugtracker">https://github.com/ElJijuna/NpmLensGnome/issues</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Main window showing NPM package search</caption>
+      <image>https://raw.githubusercontent.com/ElJijuna/NpmLensGnome/main/data/screenshots/main.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Add package dialog</caption>
+      <image>https://raw.githubusercontent.com/ElJijuna/NpmLensGnome/main/data/screenshots/add-package.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Package details view</caption>
+      <image>https://raw.githubusercontent.com/ElJijuna/NpmLensGnome/main/data/screenshots/package-details.png</image>
+    </screenshot>
+  </screenshots>
+
   <releases>
-    <release version="1.0.0" date="2026-04-08"/>
+    <release version="1.0.0" date="2026-04-08">
+      <description>
+        <p>Initial release.</p>
+      </description>
+    </release>
   </releases>
+
   <content_rating type="oars-1.1"/>
 </component>
