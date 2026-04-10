@@ -90,15 +90,15 @@ Resultado: botón Add abre el diálogo en la web app; HTML puede cerrar la venta
 
 **Objetivo:** distribuir la app como Flatpak.
 
-- [ ] Manifest `io.github.eljijuna.NpmLens.json` completo
-  - Runtime: `org.gnome.Platform` 48
-  - SDK: `org.gnome.Sdk` 48
-- [ ] Permisos mínimos (`--share=network`, `--socket=wayland`, `--socket=fallback-x11`)
-- [ ] Build local: `flatpak-builder build-dir manifest.json`
-- [ ] Instalar y probar: `flatpak-builder --install --user`
-- [ ] Script `make-release.sh` para generar `.flatpak` bundle
+- [x] Manifest `io.github.eljijuna.NpmLens.json` completo
+  - Runtime: `org.gnome.Platform` 49 (webkitgtk-6.0 incluido en Platform 49)
+  - SDK: `org.gnome.Sdk` 49
+- [x] Permisos mínimos (`--share=network`, `--socket=wayland`, `--socket=fallback-x11`, `--share=ipc`, `--device=dri`)
+- [x] Build local: `flatpak-builder --force-clean --repo=.flatpak-repo .flatpak-build io.github.eljijuna.NpmLens.json`
+- [x] Instalar y probar: `flatpak-builder --force-clean --install --user .flatpak-build io.github.eljijuna.NpmLens.json`
+- [x] Script `make-release.sh` para generar `.flatpak` bundle
 
-Resultado: `flatpak install NpmLens.flatpak` funciona desde cero.
+Resultado: `flatpak run io.github.eljijuna.NpmLens` funciona. Bundle `io.github.eljijuna.NpmLens.flatpak` generado (13 KB).
 
 ---
 

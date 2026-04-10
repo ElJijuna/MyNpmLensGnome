@@ -1,0 +1,9 @@
+# Meson build
+build/
+
+# Flatpak build artifacts
+.flatpak/
+.flatpak-build/
+.flatpak-builder/
+.flatpak-repo/
+*.flatpak
