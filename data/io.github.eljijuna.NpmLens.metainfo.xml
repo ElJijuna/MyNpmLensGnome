@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>io.github.eljijuna.MyNpmLens</id>
-  <name>MyNpmLens</name>
+  <id>io.github.eljijuna.NpmLens</id>
+  <name>NPM Lens</name>
   <summary>NPM package explorer</summary>
   <metadata_license>FSFAP</metadata_license>
   <project_license>MIT</project_license>
   <description>
     <p>Browse and explore NPM packages.</p>
   </description>
-  <launchable type="desktop-id">io.github.eljijuna.MyNpmLens.desktop</launchable>
+  <launchable type="desktop-id">io.github.eljijuna.NpmLens.desktop</launchable>
   <url type="homepage">https://eljijuna.github.io/MyNpmLens/</url>
   <releases>
     <release version="1.0.0" date="2026-04-08"/>

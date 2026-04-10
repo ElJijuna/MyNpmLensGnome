@@ -1,4 +1,4 @@
-# MyNpmLens GNOME
+# NPM Lens GNOME
 
 ## Build
 
@@ -9,5 +9,5 @@ meson compile -C build
 ## Run
 
 ```sh
-./build/src/mynpmlens
+./build/src/npmlens
 ```

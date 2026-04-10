@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/io/github/eljijuna/NpmLens">
+    <file alias="icons/hicolor/scalable/apps/io.github.eljijuna.NpmLens.svg">icons/io.github.eljijuna.NpmLens.svg</file>
+  </gresource>
+</gresources>

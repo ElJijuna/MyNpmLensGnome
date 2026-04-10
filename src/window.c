@@ -52,11 +52,18 @@ mnl_window_init (MnlWindow *self)
   WebKitUserContentManager *manager = webkit_user_content_manager_new ();
   webkit_user_content_manager_register_script_message_handler (manager, "app", NULL);
 
+  WebKitSettings *settings = webkit_settings_new_with_settings (
+    "enable-javascript",              TRUE,
+    "hardware-acceleration-policy",   WEBKIT_HARDWARE_ACCELERATION_POLICY_ALWAYS,
+    NULL);
+
   self->webview = WEBKIT_WEB_VIEW (
     g_object_new (WEBKIT_TYPE_WEB_VIEW,
                   "user-content-manager", manager,
+                  "settings",            settings,
                   NULL));
   g_object_unref (manager);
+  g_object_unref (settings);
 
   g_signal_connect (add_button, "clicked", G_CALLBACK (on_add_clicked), self->webview);
   gtk_widget_set_vexpand (GTK_WIDGET (self->webview), TRUE);

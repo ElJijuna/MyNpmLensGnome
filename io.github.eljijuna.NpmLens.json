@@ -1,9 +1,9 @@
 {
-  "app-id": "io.github.eljijuna.MyNpmLens",
+  "app-id": "io.github.eljijuna.NpmLens",
   "runtime": "org.gnome.Platform",
   "runtime-version": "48",
   "sdk": "org.gnome.Sdk",
-  "command": "mynpmlens",
+  "command": "npmlens",
   "finish-args": [
     "--share=network",
     "--socket=wayland",
@@ -13,7 +13,7 @@
   ],
   "modules": [
     {
-      "name": "mynpmlens",
+      "name": "npmlens",
       "buildsystem": "meson",
       "sources": [
         {

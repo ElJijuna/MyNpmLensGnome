@@ -1,5 +1,5 @@
-executable('mynpmlens',
-  ['main.c', 'window.c'],
+executable('npmlens',
+  ['main.c', 'window.c', app_resources],
   dependencies: [
     dependency('gtk4'),
     dependency('libadwaita-1'),

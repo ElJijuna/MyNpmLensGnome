@@ -12,7 +12,7 @@ on_activate (GApplication *app)
 int
 main (int argc, char *argv[])
 {
-  AdwApplication *app = adw_application_new ("io.github.eljijuna.MyNpmLens",
+  AdwApplication *app = adw_application_new ("io.github.eljijuna.NpmLens",
                                              G_APPLICATION_DEFAULT_FLAGS);
   g_signal_connect (app, "activate", G_CALLBACK (on_activate), NULL);
   return g_application_run (G_APPLICATION (app), argc, argv);

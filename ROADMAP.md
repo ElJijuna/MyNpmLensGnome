@@ -1,6 +1,6 @@
-# MyNpmLens GNOME App — ROADMAP
+# NPM Lens GNOME App — ROADMAP
 
-App GNOME nativa que envuelve la web app [MyNpmLens](https://eljijuna.github.io/MyNpmLens/) usando WebKitGTK.
+App GNOME nativa que envuelve la web app [NpmLens](https://eljijuna.github.io/MyNpmLens/) usando WebKitGTK.
 
 ---
 
@@ -13,15 +13,16 @@ App GNOME nativa que envuelve la web app [MyNpmLens](https://eljijuna.github.io/
 | WebView | WebKitGTK 6.0 |
 | Empaquetado | Flatpak |
 | Build system | Meson |
-| App ID | `io.github.eljijuna.MyNpmLens` |
+| App ID | `io.github.eljijuna.NpmLens` |
 
 ---
 
 ## Decisiones de diseño
 
-- **Sin HeaderBar/toolbar nativa** — la UI de control vive dentro del WebView (HTML/CSS).
-- **JS ↔ C bridge via WebKit Message Handlers** — el HTML puede invocar acciones nativas
-  (cerrar app, minimizar, etc.) usando `window.webkit.messageHandlers.app.postMessage("close")`.
+- **HeaderBar nativa con AdwToolbarView** — la barra de título y los controles de ventana son nativos de GNOME (AdwHeaderBar), el contenido vive en el WebView.
+- **JS ↔ C bridge via WebKit Message Handlers** — el HTML puede invocar acciones nativas (cerrar app, minimizar, etc.) usando `window.webkit.messageHandlers.app.postMessage("close")`.
+- **Eventos C → JS via `dispatchEvent`** — el botón Add nativo despacha `new CustomEvent('gnome:open-dialog-addpackage')` al `window` del WebView.
+- **GResource para assets** — el icono se embebe en el binario como GResource para funcionar sin instalar.
 
 ---
 
@@ -31,42 +32,43 @@ App GNOME nativa que envuelve la web app [MyNpmLens](https://eljijuna.github.io/
 
 - [x] Definir estructura de directorios (`src/`, `data/`)
 - [x] `meson.build` raíz con dependencias GTK4, libadwaita, webkitgtk-6.0
-- [x] `io.github.eljijuna.MyNpmLens.json` — manifest de Flatpak
+- [x] `io.github.eljijuna.NpmLens.json` — manifest de Flatpak
 - [x] `.desktop` entry (lanzador de app)
 - [x] Icono de aplicación (SVG del proyecto web)
-- [x] `io.github.eljijuna.MyNpmLens.metainfo.xml` (AppStream)
+- [x] `io.github.eljijuna.NpmLens.metainfo.xml` (AppStream)
 
-Resultado: `meson setup build && ninja -C build` compila sin errores.
+Resultado: `meson setup build && meson compile -C build` compila sin errores.
 
 ---
 
-## Fase 2 — Ventana mínima con WebView
+## Fase 2 — Ventana con WebView y HeaderBar nativa
 
-**Objetivo:** app que arranca y carga la URL en pantalla, sin toolbar nativa.
+**Objetivo:** app que arranca y carga la URL con barra de título nativa.
 
-- [x] `main.c` — punto de entrada, `GtkApplication` + `g_application_run()`
-- [x] `window.c` / `window.h` — `AdwApplicationWindow` con `WebKitWebView` a pantalla completa
+- [x] `main.c` — punto de entrada, `AdwApplication` + `g_application_run()`
+- [x] `window.c` / `window.h` — `AdwApplicationWindow` con `AdwToolbarView`
+- [x] `AdwHeaderBar` con botón "+ Add" (`suggested-action`)
 - [x] Cargar `https://eljijuna.github.io/MyNpmLens/` al iniciar
-- [x] Ventana sin decoraciones (`gtk_window_set_decorated(FALSE)`)
 - [x] Tamaño por defecto (1000×700) y mínimo (600×400)
+- [x] GResource: icono embebido en el binario (visible sin instalar)
 
-Resultado: `./build/mynpmlens` abre la app mostrando solo el sitio web.
+Resultado: `./build/src/npmlens` abre la app con barra nativa y el icono correcto.
 
 ---
 
-## Fase 3 — JS ↔ C bridge (Message Handlers)
+## Fase 3 — JS ↔ C bridge (Message Handlers + eventos)
 
-**Objetivo:** que el HTML pueda invocar acciones nativas del sistema.
+**Objetivo:** comunicación bidireccional entre C y el WebView.
 
-- [ ] Registrar `WebKitUserContentManager` con handler `"app"`
+- [x] Registrar `WebKitUserContentManager` con handler `"app"`
+- [x] Botón Add envía `CustomEvent('gnome:open-dialog-addpackage')` al WebView via JS
 - [ ] Conectar señal `script-message-received::app` → callback en C
 - [ ] Implementar acciones manejadas desde JS:
   - `"close"` → `g_application_quit()`
   - `"minimize"` → `gtk_window_minimize()`
   - `"maximize"` → `gtk_window_maximize()` / `gtk_window_unmaximize()`
-- [ ] La web app llama directamente `window.webkit.messageHandlers.app.postMessage("close")` en su botón
 
-Resultado: botón en HTML cierra la ventana nativa sin ningún chrome de GTK visible.
+Resultado: botón Add abre el diálogo en la web app; HTML puede cerrar la ventana nativa.
 
 ---
 
@@ -74,12 +76,12 @@ Resultado: botón en HTML cierra la ventana nativa sin ningún chrome de GTK vis
 
 **Objetivo:** comportamiento correcto del WebView en contexto desktop.
 
-- [ ] `WebKitSettings`: JavaScript habilitado, hardware acceleration
+- [x] `WebKitSettings`: JavaScript habilitado, hardware acceleration
 - [ ] Interceptar navegación: URLs externas → `xdg-open` (browser del sistema)
-- [ ] User-Agent personalizado (`MyNpmLens/1.0 WebKitGTK`)
+- [ ] User-Agent personalizado (`NpmLens/1.0 WebKitGTK`)
 - [ ] Persistencia de cookies/sesión entre reinicios (`WebKitCookieManager`)
 - [ ] Zoom: `Ctrl++` / `Ctrl+-` / `Ctrl+0`
-- [ ] `Ctrl+Q` como atajo de salida desde C (por si acaso)
+- [ ] `Ctrl+Q` como atajo de salida desde C
 - [ ] Manejo de error de red: inyectar página de error HTML con botón de reintentar
 
 ---
@@ -88,7 +90,7 @@ Resultado: botón en HTML cierra la ventana nativa sin ningún chrome de GTK vis
 
 **Objetivo:** distribuir la app como Flatpak.
 
-- [ ] Manifest `io.github.eljijuna.MyNpmLens.json` completo
+- [ ] Manifest `io.github.eljijuna.NpmLens.json` completo
   - Runtime: `org.gnome.Platform` 48
   - SDK: `org.gnome.Sdk` 48
 - [ ] Permisos mínimos (`--share=network`, `--socket=wayland`, `--socket=fallback-x11`)
@@ -96,7 +98,7 @@ Resultado: botón en HTML cierra la ventana nativa sin ningún chrome de GTK vis
 - [ ] Instalar y probar: `flatpak-builder --install --user`
 - [ ] Script `make-release.sh` para generar `.flatpak` bundle
 
-Resultado: `flatpak install MyNpmLens.flatpak` funciona desde cero.
+Resultado: `flatpak install NpmLens.flatpak` funciona desde cero.
 
 ---
 
@@ -111,17 +113,18 @@ Resultado: `flatpak install MyNpmLens.flatpak` funciona desde cero.
 ## Estructura de directorios objetivo
 
 ```
-MyNpmLensGnome/
+NpmLensGnome/
 ├── src/
 │   ├── main.c
 │   ├── window.c
 │   └── window.h
 ├── data/
 │   ├── icons/
-│   │   └── io.github.eljijuna.MyNpmLens.svg
-│   ├── io.github.eljijuna.MyNpmLens.desktop.in
-│   └── io.github.eljijuna.MyNpmLens.metainfo.xml.in
-├── io.github.eljijuna.MyNpmLens.json   # Flatpak manifest
+│   │   └── io.github.eljijuna.NpmLens.svg
+│   ├── io.github.eljijuna.NpmLens.desktop
+│   ├── io.github.eljijuna.NpmLens.metainfo.xml
+│   └── io.github.eljijuna.NpmLens.gresource.xml
+├── io.github.eljijuna.NpmLens.json   # Flatpak manifest
 ├── meson.build
 ├── ROADMAP.md
 └── LICENSE
@@ -129,7 +132,7 @@ MyNpmLensGnome/
 
 ---
 
-## Orden de implementación sugerido
+## Orden de implementación
 
 ```
 Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 → Fase 6
